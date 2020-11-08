@@ -1,0 +1,71 @@
+{
+  "name": "fahr-frontend",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@ant-design/icons": "^4.2.2",
+    "@craco/craco": "^5.7.0",
+    "@ibsheet/loader": "^1.1.5",
+    "@progress/kendo-data-query": "^1.5.4",
+    "@progress/kendo-drawing": "^1.9.3",
+    "@progress/kendo-licensing": "^1.0.1",
+    "@progress/kendo-react-animation": "^4.0.0",
+    "@progress/kendo-react-data-tools": "^4.0.0",
+    "@progress/kendo-react-dateinputs": "^4.0.0",
+    "@progress/kendo-react-dialogs": "^4.0.0",
+    "@progress/kendo-react-dropdowns": "^4.0.0",
+    "@progress/kendo-react-grid": "^4.0.0",
+    "@progress/kendo-react-inputs": "^4.0.0",
+    "@progress/kendo-react-intl": "^4.0.0",
+    "@progress/kendo-theme-default": "^4.25.0",
+    "@reduxjs/toolkit": "^1.4.0",
+    "antd": "^4.7.3",
+    "axios": "^0.21.0",
+    "craco-less": "^1.17.0",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
+    "react-redux": "^7.2.1",
+    "react-scripts": "^3.4.4",
+    "redux-logger": "^3.0.6",
+    "redux-saga": "^1.1.3",
+    "styled-components": "^5.2.0",
+    "use-http": "^1.0.15"
+  },
+  "scripts": {
+    "start": "craco start",
+    "build": "craco build",
+    "test": "craco test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app",
+    "plugins": [
+      "react-hooks"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^5.11.5",
+    "@testing-library/react": "^11.1.0",
+    "@testing-library/user-event": "^12.1.10",
+    "@types/jest": "^26.0.15",
+    "@types/node": "^14.14.3",
+    "@types/react": "^16.9.53",
+    "@types/react-dom": "^16.9.8",
+    "@types/react-redux": "^7.1.9",
+    "@types/redux-logger": "^3.0.8",
+    "@types/styled-components": "^5.1.4",
+    "typescript": "^4.0.3"
+  }
+}
