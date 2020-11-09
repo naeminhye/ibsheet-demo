@@ -2,10 +2,11 @@ import React, { useEffect } from 'react';
 import IBSheetTable from 'components/IBSheetTable';
 import { useIbsheet } from 'hooks/useIbsheet';
 
+import { RootState } from 'store';
+
 // redux-toolkit
 import { useSelector, useDispatch } from 'react-redux';
-import { RootState } from 'store';
-import { fetchAllUsers, addRows } from './slice';
+import { fetchAllUsers, selectUsers } from './slice';
 
 import { ControlPanel, ControlButton } from './styles';
 
@@ -60,17 +61,17 @@ const options = {
       },
     },
     {
-      Header: 'First Name',
+      Header: 'Name',
       Type: 'Text',
-      Name: 'first_name',
-      Width: 150,
+      Name: 'name',
+      Width: 200,
       Align: 'Center',
       CanEdit: 1,
     },
     {
-      Header: 'Last Name',
+      Header: 'User Name',
       Type: 'Text',
-      Name: 'last_name',
+      Name: 'username',
       Width: 150,
       Align: 'Center',
       CanEdit: 1,
@@ -84,33 +85,43 @@ const options = {
       CanEdit: 1,
     },
     {
-      Header: 'Gender',
-      Type: 'Enum',
-      Name: 'gender',
-      MinWidth: 100,
+      Header: 'Phone',
+      Type: 'Text',
+      Name: 'phone',
       Align: 'Center',
+      MinWidth: 150,
       CanEdit: 1,
-      Enum: '|Male|Female',
-      EnumKeys: '|Male|Female',
     },
-    {
-      Header: 'Birthday',
-      Type: 'Date',
-      Name: 'birthday',
-      MinWidth: 200,
-      Align: 'Center',
-      CanEdit: 1,
-      Format: 'yyyy/MM/dd',
-      EditFormat: 'yyyy/MM/dd',
-      DataFormat: 'yyyy/MM/dd',
-    },
+    // {
+    //   Header: 'Gender',
+    //   Type: 'Enum',
+    //   Name: 'gender',
+    //   MinWidth: 100,
+    //   Align: 'Center',
+    //   CanEdit: 1,
+    //   Enum: '|Male|Female',
+    //   EnumKeys: '|Male|Female',
+    // },
+    // {
+    //   Header: 'Birthday',
+    //   Type: 'Date',
+    //   Name: 'birthday',
+    //   MinWidth: 200,
+    //   Align: 'Center',
+    //   CanEdit: 1,
+    //   Format: 'yyyy/MM/dd',
+    //   EditFormat: 'yyyy/MM/dd',
+    //   DataFormat: 'yyyy/MM/dd',
+    // },
   ],
 };
 
 const SheetSample = () => {
   const ibSheet = useIbsheet('sheet-sample');
 
-  const data = useSelector((state: RootState) => state.users.data);
+  // const { entities, loading } = useSelector(selectUsers);
+  const entities = useSelector((state: RootState) => state.users.entities);
+  const loading = useSelector((state: RootState) => state.users.loading);
   const dispatch = useDispatch();
 
   // const onDownExcel = () => {
@@ -131,11 +142,11 @@ const SheetSample = () => {
     const sheet = ibSheet.ibsheet;
     const tRow = sheet.getTotalRowCount();
     const newRow = {
-      first_name: '',
-      last_name: '',
-      email: '',
-      gender: '',
-      birthday: '',
+      // first_name: '',
+      // last_name: '',
+      // email: '',
+      // gender: '',
+      // birthday: '',
       ID: tRow + 1, // TODO
     };
     let next = sheet.getFirstRow();
@@ -197,7 +208,7 @@ const SheetSample = () => {
         <IBSheetTable
           id="sheet-sample"
           el="sheet-sample"
-          data={data}
+          data={entities ? entities : []}
           options={options}
         />
       </div>

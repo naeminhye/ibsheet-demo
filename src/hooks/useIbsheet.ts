@@ -26,8 +26,7 @@ export const useIbsheet = (id: string) => {
   useEffect(() => {
     loader.once('create-sheet', (event: SheetEvent) => {
       const { data } = event
-      console.log('create sheetId:', data.id)
-      console.log('create-sheet event sheetId:', data)
+      console.log('[START CREATING SHEET]', data)
     })
   })
 
@@ -39,7 +38,7 @@ export const useIbsheet = (id: string) => {
       const sheetById = (sheet as any).find(
         (item: any) => item != null && String(item.id) === String(id),
       );
-      console.log('created-sheet event sheetId:', id)
+      console.log('[CREATED SHEET SUCCESSFULLY] event sheetId:', id)
       setIbsheet(sheetById);
     });
   }, [id]);
@@ -48,8 +47,7 @@ export const useIbsheet = (id: string) => {
   useEffect(() => {
     loader.once('create-sheet-failed', (event: any) => {
       const { data, error } = event
-      // console.error('[CREATE_SHEET_ERROR]', data.id, error)
-      console.error('create-sheet-failed event sheetId:', error)
+      console.error('[CREATED SHEET FAILED]:', data.id, error)
     })
   })
 

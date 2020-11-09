@@ -1,46 +1,79 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import JSONData from './data.json';
+import * as userAPI from 'api/userAPI';
+import { RootState } from 'store';
 
-interface IUserState {
-  data: IUser[],
-  options: any,
-  loading: boolean,
-};
+// import JSONData from './data.json';
 
 interface IUser {
+  // first: string
+  // last: string
+  // email: string
+  // address: string
+  // created: string
+  // balance: string
   id: number,
-  first_name: string,
-  last_name: string,
+  name: string,
+  username: string,
+  // first_name: string,
+  // last_name: string,
   email: string,
-  gender: string,
-  birthday: string,
+  phone: string
+  // gender: string,
+  // birthday: string,
+};
+
+interface IUserState {
+  entities: IUser[],
+  options: any,
+  loading: 'idle' | 'pending',
+  error: any
 };
 
 const initialState: IUserState = {
-  data: JSONData,
-  options: {},
-  loading: false
+  entities: [],
+  options: {},  
+  loading: 'idle',
+  error: null,
 };
+
+// Thunk
+export const fetchAllUsers = createAsyncThunk(
+  'users/fetchAllUsers',
+   () => userAPI.handleFetchAllUsers()
+)
 
 export const usersSlice = createSlice({
   name: 'users',
   initialState,
   reducers: {
-    fetchAllUsers: (state) => {
-      return {...state}
-    },
-    addRows: (state, action: PayloadAction<IUser[]>) => {
-      state.data = [...state.data, ...action.payload];
-    },
+    // fetchAllUsers: (state) => {
+    //   return {...state}
+    // },
+    // addRows: (state, action: PayloadAction<IUser[]>) => {
+    //   state.data = [...state.data, ...action.payload];
+    // },
   },
+  extraReducers: {
+    [fetchAllUsers.pending.type]: (state, action) => {
+      state.loading = 'pending';
+    },
+    [fetchAllUsers.fulfilled.type]: (state, action) => {
+      state.entities = action.payload;
+      state.loading = 'idle';
+    },
+    [fetchAllUsers.rejected.type]: (state, action) => {
+      state.entities = [];
+      state.loading = 'idle';
+    },
+  }
 });
-// Later, dispatch the thunk as needed in the app
-// dispatch(fetchAllUsers())
 
-export const {
-  fetchAllUsers,
-  addRows
-} = usersSlice.actions;
+// export const {
+//   fetchAllUsers,
+//   addRows
+// } = usersSlice.actions;
+// Selectors
+export const selectUsers = (state: RootState) => state.users
 
 export default usersSlice.reducer;

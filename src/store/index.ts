@@ -1,19 +1,20 @@
 import { configureStore } from '@reduxjs/toolkit';
-import createSagaMiddleware from 'redux-saga';
+// import createSagaMiddleware from 'redux-saga';
+import thunk from 'redux-thunk'
 import { createLogger } from 'redux-logger';
 import rootReducer from './rootReducer';
 import rootSaga from './rootSaga';
 
-const saga = createSagaMiddleware();
+// const thunk = createSagaMiddleware();
 const logger = createLogger();
 
 const createStore = () => {
   const store = configureStore({
     reducer: rootReducer,
     devTools: true,
-    middleware: [saga, logger],
+    middleware: [thunk, logger],
   });
-  saga.run(rootSaga);
+  // saga.run(rootSaga);
   return store;
 };
 
