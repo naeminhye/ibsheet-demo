@@ -43,17 +43,27 @@ export const fetchAllUsers = createAsyncThunk(
    () => userAPI.handleFetchAllUsers()
 )
 
+export const addNewUser = createAsyncThunk(
+  'users/addNewUser',
+  async (userData, thunkAPI) => {
+    const response = await userAPI.handleAddUser({
+      id: 100,
+      name: 'gfghdhd',
+      username: 'dfgdfg',
+      email: 'dfgdfg',
+      phone: 'gdfgdfg',
+    });
+    console.log("userData", userData)
+    console.log("thunkAPI", thunkAPI)
+    // thunkAPI.dispatch(fetchAllUsers());
+    return response.data
+  }
+)
+
 export const usersSlice = createSlice({
   name: 'users',
   initialState,
-  reducers: {
-    // fetchAllUsers: (state) => {
-    //   return {...state}
-    // },
-    // addRows: (state, action: PayloadAction<IUser[]>) => {
-    //   state.data = [...state.data, ...action.payload];
-    // },
-  },
+  reducers: {},
   extraReducers: {
     [fetchAllUsers.pending.type]: (state, action) => {
       state.loading = 'pending';
@@ -66,13 +76,20 @@ export const usersSlice = createSlice({
       state.entities = [];
       state.loading = 'idle';
     },
+    [addNewUser.pending.type]: (state, action) => {
+      state.loading = 'pending';
+    },
+    [addNewUser.fulfilled.type]: (state, action) => {
+      state.entities.push(action.payload);
+      state.loading = 'idle';
+    },
+    [addNewUser.rejected.type]: (state, action) => {
+      state.entities = [];
+      state.loading = 'idle';
+    },
   }
 });
 
-// export const {
-//   fetchAllUsers,
-//   addRows
-// } = usersSlice.actions;
 // Selectors
 export const selectUsers = (state: RootState) => state.users
 

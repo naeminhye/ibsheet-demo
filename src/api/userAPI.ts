@@ -7,7 +7,7 @@ import axios from 'axios';
 //   });
 
 // const API_URL = 'https://randomapi.com/api/6de6abfedb24f889e0b5f675edc50deb?fmt=raw&sole'
-const API_URL = 'https://jsonplaceholder.typicode.com/users'
+const API_URL = 'https://jsonplaceholder.typicode.com/users';
 
 const handleFetchAllUsers = async () => {
     return await axios.get(API_URL)
@@ -20,4 +20,15 @@ const handleFetchAllUsers = async () => {
     });
 }
 
-export { handleFetchAllUsers }
+const handleAddUser = async (userData: any) => {
+    return await axios.post(API_URL, userData)
+    .then(response => {
+        return response.data;
+    })
+    .catch(err => {
+        console.error('Error get current user:', err);
+        throw err;
+    });
+}
+
+export { handleFetchAllUsers, handleAddUser }

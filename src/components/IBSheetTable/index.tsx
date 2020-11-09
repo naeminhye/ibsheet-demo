@@ -12,6 +12,8 @@ const IBSheetTable = ({ id, el, data, options }: any) => {
       data,
     });
 
+    console.log("[IBSheetTable]:", data.length)
+
     return () => loader.removeSheet(id);
   }, [id, el, data, options]);
 

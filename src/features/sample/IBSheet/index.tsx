@@ -1,15 +1,18 @@
-import React, { useEffect } from 'react';
+import React, { useState } from 'react';
 import IBSheetTable from 'components/IBSheetTable';
 import { useIbsheet } from 'hooks/useIbsheet';
+
+import Spin from 'antd/es/spin';
 
 import { RootState } from 'store';
 
 // redux-toolkit
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchAllUsers, selectUsers } from './slice';
+import { fetchAllUsers, addNewUser } from './slice';
 
 import { ControlPanel, ControlButton } from './styles';
 
+let selected: any[] = [];
 const options = {
   Cfg: {
     // InfoRowConfig: {
@@ -56,8 +59,10 @@ const options = {
       Header: 'Select',
       Type: 'Bool',
       Name: 'select',
-      OnChange: function (evtParam: any) {
+      OnChange: function (arg: any) {
         // Add to/Remove from selected rows list
+        arg.sheet.selectRow( arg.row, arg.row[arg.col]);
+        console.log("arg", arg)
       },
     },
     {
@@ -92,27 +97,6 @@ const options = {
       MinWidth: 150,
       CanEdit: 1,
     },
-    // {
-    //   Header: 'Gender',
-    //   Type: 'Enum',
-    //   Name: 'gender',
-    //   MinWidth: 100,
-    //   Align: 'Center',
-    //   CanEdit: 1,
-    //   Enum: '|Male|Female',
-    //   EnumKeys: '|Male|Female',
-    // },
-    // {
-    //   Header: 'Birthday',
-    //   Type: 'Date',
-    //   Name: 'birthday',
-    //   MinWidth: 200,
-    //   Align: 'Center',
-    //   CanEdit: 1,
-    //   Format: 'yyyy/MM/dd',
-    //   EditFormat: 'yyyy/MM/dd',
-    //   DataFormat: 'yyyy/MM/dd',
-    // },
   ],
 };
 
@@ -134,9 +118,11 @@ const SheetSample = () => {
   //   ibSheet?.ibsheet?.loadExcel({ mode: 'HeaderMatch' });
   // };
 
-  useEffect(() => {
-    dispatch(fetchAllUsers());
-  }, [dispatch]);
+  const add = () => {
+    dispatch(
+      addNewUser()
+    );
+  };
 
   const handleAddBlankRow = () => {
     const sheet = ibSheet.ibsheet;
@@ -147,7 +133,7 @@ const SheetSample = () => {
       // email: '',
       // gender: '',
       // birthday: '',
-      ID: tRow + 1, // TODO
+      // ID: tRow + 1,
     };
     let next = sheet.getFirstRow();
     if (tRow > 0) {
@@ -165,7 +151,7 @@ const SheetSample = () => {
     // Get selected rows
     const selectedRows = sheet.getSelectedRows();
     if (selectedRows.length > 0) {
-      sheet.deleteRows({ rows: selectedRows });
+      sheet.deleteRows({ rows: selectedRows }, 2);
     }
   };
 
@@ -177,7 +163,6 @@ const SheetSample = () => {
     // 2: the modified data ( Added, Changed, Deleted)) ( default)
     // 3: The modified data ( Added, Changed, Deleted) + a mobile data ( Moved)
     let saveJson = sheet.getSaveJson({ saveMode: 2, validRequired: 1 });
-
     // dispatch(fetchAllUsers());
   };
 
@@ -195,8 +180,14 @@ const SheetSample = () => {
       </div>
       <div className="card-body">
         <ControlPanel>
-          <ControlButton onClick={() => {}}>Search</ControlButton>
-          <ControlButton type="primary" onClick={handleAddBlankRow}>
+          <ControlButton
+            onClick={() => {
+              dispatch(fetchAllUsers());
+            }}
+          >
+            Search
+          </ControlButton>
+          <ControlButton type="primary" onClick={add}>
             Add
           </ControlButton>
           <ControlButton danger onClick={handleDeleteRows}>
@@ -205,12 +196,14 @@ const SheetSample = () => {
           <ControlButton onClick={handleSaveData}>Save</ControlButton>
         </ControlPanel>
 
-        <IBSheetTable
-          id="sheet-sample"
-          el="sheet-sample"
-          data={entities ? entities : []}
-          options={options}
-        />
+        <Spin spinning={loading === 'pending'}>
+          <IBSheetTable
+            id="sheet-sample"
+            el="sheet-sample"
+            data={entities}
+            options={options}
+          />
+        </Spin>
       </div>
     </div>
   );
