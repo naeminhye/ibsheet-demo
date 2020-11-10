@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import IBSheetTable from 'components/IBSheetTable';
 import { useIbsheet } from 'hooks/useIbsheet';
 
@@ -8,7 +8,7 @@ import { RootState } from 'store';
 
 // redux-toolkit
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchAllUsers, addNewUser } from './slice';
+import { fetchAllUsers, reloadUsers, IUser } from './slice';
 
 import { ControlPanel, ControlButton } from './styles';
 
@@ -26,10 +26,11 @@ const options = {
     // ShowFilter: 1,
     CanEdit: 1,
     CanSelect: 1,
+    FitWidth: 1,
     // PageLength: 15,
-    // Export: {
-    //   Url: 'https://api.ibleaders.com/ibsheet/v8/',
-    // },
+    Export: {
+      Url: 'https://api.ibleaders.com/ibsheet/v8/',
+    },
   },
   Def: {
     Row: {
@@ -61,8 +62,15 @@ const options = {
       Name: 'select',
       OnChange: function (arg: any) {
         // Add to/Remove from selected rows list
-        arg.sheet.selectRow( arg.row, arg.row[arg.col]);
-        console.log("arg", arg)
+        // arg.sheet.selectRow( arg.row, arg.row[arg.col], true);
+        // console.log("arg", arg.sheet.getSelectedRows())
+        const currentIndex = arg.row.SEQ;
+        const isSelected = arg.row[arg.col];
+        // console.log("arg", arg)
+        // console.log("currentRow", arg.sheet.getRowByIndex(currentIndex))
+        const currentRow = arg.sheet.getRowByIndex(currentIndex);
+        arg.sheet.selectRow(currentRow, isSelected);
+        console.log("getSelectedRows", arg.sheet.getSelectedRows())
       },
     },
     {
@@ -108,32 +116,26 @@ const SheetSample = () => {
   const loading = useSelector((state: RootState) => state.users.loading);
   const dispatch = useDispatch();
 
-  // const onDownExcel = () => {
-  //   ibSheet.ibsheet.down2Excel({
-  //     fileName: 'test.xlsx',
-  //   });
-  // };
+  const handleDownloadExcel = () => {
+    ibSheet.ibsheet.down2Excel({
+      fileName: 'test.xlsx',
+    });
+  };
 
   // const onLoadExcel = () => {
   //   ibSheet?.ibsheet?.loadExcel({ mode: 'HeaderMatch' });
   // };
 
-  const add = () => {
-    dispatch(
-      addNewUser()
-    );
-  };
-
   const handleAddBlankRow = () => {
     const sheet = ibSheet.ibsheet;
     const tRow = sheet.getTotalRowCount();
     const newRow = {
-      // first_name: '',
-      // last_name: '',
-      // email: '',
-      // gender: '',
-      // birthday: '',
-      // ID: tRow + 1,
+        id: tRow + 1,
+        name:"",
+        username:"",
+        email:"",
+        phone:"",
+        website:""
     };
     let next = sheet.getFirstRow();
     if (tRow > 0) {
@@ -155,15 +157,11 @@ const SheetSample = () => {
     }
   };
 
+  // TODO
   const handleSaveData = () => {
     const sheet = ibSheet.ibsheet;
-    // saveMode
-    // 0: All data
-    // 1: All of the data Deleted, except for the
-    // 2: the modified data ( Added, Changed, Deleted)) ( default)
-    // 3: The modified data ( Added, Changed, Deleted) + a mobile data ( Moved)
-    let saveJson = sheet.getSaveJson({ saveMode: 2, validRequired: 1 });
-    // dispatch(fetchAllUsers());
+    let dataRows = sheet.getDataRows();
+    dispatch(reloadUsers(dataRows));
   };
 
   return (
@@ -187,13 +185,15 @@ const SheetSample = () => {
           >
             Search
           </ControlButton>
-          <ControlButton type="primary" onClick={add}>
+          <ControlButton type="primary" onClick={handleAddBlankRow}>
             Add
           </ControlButton>
           <ControlButton danger onClick={handleDeleteRows}>
             Delete
           </ControlButton>
           <ControlButton onClick={handleSaveData}>Save</ControlButton>
+          <ControlButton onClick={handleDownloadExcel}>Download</ControlButton>
+          <ControlButton onClick={handleSaveData}>Upload</ControlButton>
         </ControlPanel>
 
         <Spin spinning={loading === 'pending'}>
